@@ -3,6 +3,8 @@
  */
 package com.rain.fiction_archive;
 
+import com.rain.fiction_archive.gui.MainWindow;
+
 /**
  * @author Ryan May
  *
@@ -13,8 +15,8 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		MainWindow app = new MainWindow();
+		app.begin(args);
 	}
 
 }
