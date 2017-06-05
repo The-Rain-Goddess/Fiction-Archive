@@ -1,7 +1,12 @@
 package com.rain.fiction_archive.files;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
+
+import com.rain.fiction_archive.Main;
 
 public class Fandom implements Serializable{
 	/**
@@ -16,6 +21,14 @@ public class Fandom implements Serializable{
 		this.name = fa.getName();
 		this.path = fa.getPath();
 		this.UUID = UUID;
+	}
+	
+	public void writeToDisk() throws IOException{
+		FileOutputStream f_out = new FileOutputStream(Main.getHomeDir() + "Fandom\\" + name + ".data");
+		ObjectOutputStream obj_out = new ObjectOutputStream(f_out);
+		obj_out.writeObject(this);
+		obj_out.close();
+		f_out.close();		
 	}
 
 	/**

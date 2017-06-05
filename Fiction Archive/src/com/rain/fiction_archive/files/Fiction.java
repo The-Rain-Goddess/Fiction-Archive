@@ -2,6 +2,9 @@ package com.rain.fiction_archive.files;
 
 import java.io.Serializable;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Fiction implements Serializable{
 
 	/**
@@ -25,12 +28,26 @@ public class Fiction implements Serializable{
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * @return the name
+	 */
+	public StringProperty getNameProperty() {
+		return new SimpleStringProperty(name);
+	}
 
 	/**
 	 * @return the author
 	 */
 	public String getAuthor() {
 		return author;
+	}
+	
+	/**
+	 * @return the author
+	 */
+	public StringProperty getAuthorProperty() {
+		return new SimpleStringProperty(author);
 	}
 
 	/**
