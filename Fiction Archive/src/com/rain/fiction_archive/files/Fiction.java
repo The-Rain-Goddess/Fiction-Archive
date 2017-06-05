@@ -2,6 +2,8 @@ package com.rain.fiction_archive.files;
 
 import java.io.Serializable;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -12,7 +14,7 @@ public class Fiction implements Serializable{
 	 */
 	private static final long serialVersionUID = 5185781113396566196L;
 	private String name, author, path, url;
-	private int bookmarkChapter;
+	private int bookmarkChapter, wordCount, chapterCount, rating;
 
 	public Fiction(FictionAttributes fa) {
 		this.name = fa.getName();
@@ -20,6 +22,70 @@ public class Fiction implements Serializable{
 		this.path = fa.getPath();
 		this.url = fa.getUrl();
 		this.bookmarkChapter = fa.getBookmarkChapter();
+		this.wordCount = fa.getWordCount();
+	}
+
+	/**
+	 * @return the rating
+	 */
+	public int getRating() {
+		return rating;
+	}
+	
+	/**
+	 * @return the rating
+	 */
+	public IntegerProperty getRatingProperty() {
+		return new SimpleIntegerProperty(rating);
+	}
+
+	/**
+	 * @param rating the rating to set
+	 */
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
+	/**
+	 * @return the chapterCount
+	 */
+	public int getChapterCount() {
+		return chapterCount;
+	}
+	
+	/**
+	 * @return the chapterCount
+	 */
+	public IntegerProperty getChapterCountProperty() {
+		return new SimpleIntegerProperty(chapterCount);
+	}
+
+	/**
+	 * @param chapterCount the chapterCount to set
+	 */
+	public void setChapterCount(int chapterCount) {
+		this.chapterCount = chapterCount;
+	}
+
+	/**
+	 * @return the wordCount
+	 */
+	public int getWordCount() {
+		return wordCount;
+	}
+	
+	/**
+	 * @return the wordCount
+	 */
+	public IntegerProperty getWordCountProperty() {
+		return new SimpleIntegerProperty(wordCount);
+	}
+
+	/**
+	 * @param wordCount the wordCount to set
+	 */
+	public void setWordCount(int wordCount) {
+		this.wordCount = wordCount;
 	}
 
 	/**
@@ -69,6 +135,13 @@ public class Fiction implements Serializable{
 	 */
 	public int getBookmarkChapter() {
 		return bookmarkChapter;
+	}
+	
+	/**
+	 * @return the bookmarkChapter
+	 */
+	public IntegerProperty getBookmarkChapterProperty() {
+		return new SimpleIntegerProperty(bookmarkChapter);
 	}
 
 	/**

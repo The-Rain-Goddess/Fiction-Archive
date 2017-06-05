@@ -2,7 +2,7 @@ package com.rain.fiction_archive.files;
 
 public class FictionAttributes {
 	private String name, author, path, url;
-	private int bookmarkChapter;
+	private int bookmarkChapter, wordCount;
 	
 	/**
 	 * @return the name
@@ -67,6 +67,19 @@ public class FictionAttributes {
 	 */
 	public FictionAttributes setBookmarkChapter(int bookmarkChapter) {
 		this.bookmarkChapter = bookmarkChapter;
+		return this;
+	}
+	/**
+	 * @return the wordCount
+	 */
+	public int getWordCount() {
+		return wordCount;
+	}
+	/**
+	 * @param wordCount the wordCount to set
+	 */
+	public FictionAttributes setWordCount(int wordCount) {
+		this.wordCount = wordCount;
 		return this;
 	}
 }
