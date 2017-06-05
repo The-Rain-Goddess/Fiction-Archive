@@ -1,9 +1,77 @@
 package com.rain.fiction_archive.files;
 
-public class Fandom {
+import java.io.Serializable;
+import java.util.List;
 
-	public Fandom() {
-		// TODO Auto-generated constructor stub
+public class Fandom implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5453372685173030717L;
+	private String name, path;
+	private List<Fiction> fictions;
+	private long UUID;
+
+	public Fandom(FandomAttributes fa, long UUID) {
+		this.name = fa.getName();
+		this.path = fa.getPath();
+		this.UUID = UUID;
+	}
+
+	/**
+	 * @return the UUID
+	 */
+	public long getUUID() {
+		return UUID;
+	}
+
+	/**
+	 * @param UUID the UUID to set
+	 */
+	public void setUUID(long uUID) {
+		UUID = uUID;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * @return the fictions
+	 */
+	public List<Fiction> getFictions() {
+		return fictions;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param path the path to set
+	 */
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	/**
+	 * @param fictions the fictions to set
+	 */
+	public void setFictions(List<Fiction> fictions) {
+		this.fictions = fictions;
 	}
 
 }
