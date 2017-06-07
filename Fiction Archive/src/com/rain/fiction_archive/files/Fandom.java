@@ -86,5 +86,10 @@ public class Fandom implements Serializable{
 	public void setFictions(List<Fiction> fictions) {
 		this.fictions = fictions;
 	}
+	
+	@Override
+	public String toString(){
+		return "Name: " + name + " \nPath: " + path + "\nFictions: " + fictions + "\n";
+	}
 
 }
