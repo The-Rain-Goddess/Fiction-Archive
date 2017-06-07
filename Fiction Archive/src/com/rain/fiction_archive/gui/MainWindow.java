@@ -3,16 +3,20 @@ package com.rain.fiction_archive.gui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import com.rain.fiction_archive.Main;
 import com.rain.fiction_archive.files.Fandom;
+import com.rain.fiction_archive.files.FandomAttributes;
 import com.rain.fiction_archive.files.Fiction;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,6 +29,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -42,6 +47,7 @@ public class MainWindow extends Application{
 	private final static int WINDOW_MIN_HEIGHT = 700;
 	private final static Insets DEFAULT_INSETS = new Insets(10,10,10,10);
 	private TabPane tabs;
+	private Button addFiction;
 	
 	public void begin(String[] args) {
 		launch(args);
@@ -151,15 +157,17 @@ public class MainWindow extends Application{
 //Archive Data
 	private AnchorPane getArchiveData(){
 		AnchorPane anchor = new AnchorPane();
+		addFiction = new Button();
 		
 		//tabs
 		tabs = new TabPane();
-		tabs.setPrefWidth(WINDOW_MIN_WIDTH * 2 / 3);
+		tabs.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		tabs.setPrefWidth(WINDOW_MIN_WIDTH * 8 / 10);
 		tabs.getTabs().addAll(getTabs());
 		
 		//controls
 		HBox controls = new HBox();
-		controls.getChildren().addAll(getAddTabButton());
+		controls.getChildren().addAll(addFiction, getAddTabButton());
 		
 		//formatting
 		anchor.getChildren().addAll(tabs, controls);
@@ -176,15 +184,92 @@ public class MainWindow extends Application{
 	private List<Tab> getTabs() {
 		List<Tab> tabs = new ArrayList<>();
 		List<Fandom> data = Main.getMasterDataAsList();
-		for(int i = 0; i < data.size(); i++) {
-			tabs.add(getFandomTab(data.get(i)));
-		} return tabs;
+		if(data.size()!=0){ 
+			updateAddFictionButton(data.get(0));
+			for(int i = 0; i < data.size(); i++) {
+				tabs.add(getFandomTab(data.get(i)));
+			} return tabs;
+		} else{ //initial setup conditions
+			Tab t = new Tab("Initial");
+			t.setContent(new TableView<Fandom>());
+			return Arrays.asList(t);
+		}
+	}
+	
+	private void updateAddFictionButton(Fandom fandom){
+		this.addFiction.setText("Add to " + fandom.getName());
+		addFiction.setGraphic(new ImageView(new Image("res/add.png")));
+		addFiction.setOnAction((ActionEvent e) -> {
+			showAddFictionWindow(fandom);
+		});
+	}
+	
+	private void showAddFictionWindow(Fandom fandom){
+		System.out.println("Adding fiction to " + fandom.getName());
+
+		//create new Stage
+		Stage addFictionWindowRootStage = new Stage();
+		addFictionWindowRootStage.setTitle("ADD New Fiction");
+		GridPane componentLayout = getAddWindowLayout();
+		
+		//add all window components to componentLayout
+		componentLayout.getChildren().addAll(getAddFictionWindowComponents(addFictionWindowRootStage));
+		
+		//create Scene
+		Scene scene = new Scene(componentLayout,550,300);
+		
+		//set Screen to show Scene
+		addFictionWindowRootStage.setScene(scene);
+		addFictionWindowRootStage.show();
+	}
+	
+	private List<Control> getAddFictionWindowComponents(Stage root){
+		List<Control> windowComponents = new ArrayList<>();
+		
+		//Name
+		final Label nameLabel = new Label("Name: ");
+		final TextField nameField = new TextField();
+		nameField.setPromptText("Name *");
+		nameField.setPrefColumnCount(30);
+		nameField.setFocusTraversable(false);
+		
+		//Author
+		final Label authorLabel = new Label("Author: ");
+		final TextField authorField = new TextField();
+		authorField.setPromptText("Author *");
+		
+		//Word Count
+		final Label wordLabel = new Label("Word Count: ");
+		final TextField wordField = new TextField();
+		wordField.setPromptText("Word Count");
+		
+		//submit
+		Button submit = new Button("Submit");		
+		
+		//constraints
+		GridPane.setConstraints(nameLabel, 0, 0);
+		GridPane.setConstraints(nameField, 1, 0);
+		GridPane.setConstraints(submit, 2, 0);
+		
+		GridPane.setConstraints(authorLabel, 0, 1);
+		GridPane.setConstraints(authorField, 1, 1);
+		
+		GridPane.setConstraints(wordLabel, 0, 2);
+		GridPane.setConstraints(wordField, 1, 2);
+		
+		windowComponents.addAll(Arrays.asList(nameLabel, nameField, submit,
+												authorLabel, authorField,
+												wordLabel, wordField));
+		return windowComponents;
 	}
 	
 	private Tab getFandomTab(Fandom f){
 		Tab tab = new Tab();
 		tab.setText(f.getName());
 		tab.setContent(setupFandomDataTable(f.getFictions()));
+		tab.setOnSelectionChanged((Event e)->{
+			updateAddFictionButton(f);
+		});
 		return tab;
 	}
 	
@@ -225,7 +310,23 @@ public class MainWindow extends Application{
 		TableColumn<Fiction, String> authorCol = new TableColumn<Fiction, String>("Author");
 		authorCol.setCellValueFactory(cellData -> cellData.getValue().getAuthorProperty());
 		
-		return Arrays.asList(nameCol, authorCol);		
+		//Column 3: Word Count
+		TableColumn<Fiction, String> lengthCol = new TableColumn<Fiction, String>("Word Count");
+		lengthCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.format(Locale.US, "%,d", cellData.getValue().getWordCount())));
+		
+		//Column 4: Chapter Count
+		TableColumn<Fiction, Number> chapterCol = new TableColumn<Fiction, Number>("Chapters");
+		chapterCol.setCellValueFactory(cellData -> cellData.getValue().getChapterCountProperty());
+		
+		//Column 5: Chapter Count
+		TableColumn<Fiction, Number> bookmarkedCol = new TableColumn<Fiction, Number>("Bookmarked");
+		bookmarkedCol.setCellValueFactory(cellData -> cellData.getValue().getBookmarkChapterProperty());
+		
+		//Column 6: Personal Rating
+		TableColumn<Fiction, Number> ratingCol = new TableColumn<Fiction, Number>("Rating");
+		ratingCol.setCellValueFactory(cellData -> cellData.getValue().getBookmarkChapterProperty());
+		
+		return Arrays.asList(nameCol, authorCol, bookmarkedCol, chapterCol, lengthCol, ratingCol);		
 	}
 	
 	private SortedList<Fiction> getSortedData(TextField search, List<Fiction> list){
@@ -260,7 +361,7 @@ public class MainWindow extends Application{
 	}
 	
 	private Button getAddTabButton(){
-		Button add = new Button();
+		Button add = new Button("Add Fandom");
 		add.setGraphic(new ImageView(new Image("res/add.png")));
 		add.setOnAction((ActionEvent e) -> {
 			showAddFandomWindow();
@@ -294,7 +395,39 @@ public class MainWindow extends Application{
 	}
 	
 	private List<Control> getAddWindowComponents(Stage root){
-		return new ArrayList<Control>();
+		List<Control> controls = new ArrayList<>();
+		
+		//Name
+		final Label nameLabel = new Label("Name: ");
+		final TextField nameField = new TextField();
+		nameField.setPromptText("Name *");
+		nameField.setPrefColumnCount(30);
+		//nameField.setEditable(false);
+		nameField.setFocusTraversable(false);
+		Button addButton = new Button("Submit");
+		addButton.setOnAction((ActionEvent e) -> {
+			Fandom newFandom = new Fandom(new FandomAttributes()
+													.setName(nameField.getText())
+													.setPath(Main.getHomeDir() + nameField.getText())
+													, Main.getNextUUID());
+			System.out.println("Added new Fandom: " + newFandom.getName());
+			Main.getMasterArchiveDataMap().put(newFandom.getUUID(), newFandom);
+			
+			updateTabs();
+			root.close();
+		});
+		GridPane.setConstraints(addButton, 2, 0);
+		GridPane.setConstraints(nameField, 1, 0);
+		GridPane.setConstraints(nameLabel, 0, 0);
+		
+		
+		controls.addAll(Arrays.asList(nameLabel, nameField, addButton));
+		return controls;
+	}
+	
+	private void updateTabs(){
+		tabs.getTabs().clear();
+		tabs.getTabs().addAll(getTabs());
 	}
 	
 //Archive File System
