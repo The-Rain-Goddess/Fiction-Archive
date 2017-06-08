@@ -178,5 +178,13 @@ public class Fiction implements Serializable{
 	public void setBookmarkChapter(int bookmarkChapter) {
 		this.bookmarkChapter = bookmarkChapter;
 	}
+	
+	@Override
+	public String toString(){
+		return "Name: " + this.name
+				+ "\n Author: " + this.author
+				+ "\n Word Count: " + this.wordCount
+				+ "\n Rating: " + this.rating;
+	}
 
 }
