@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.rain.fiction_archive.files.Fandom;
 import com.rain.fiction_archive.gui.MainWindow;
@@ -26,6 +28,7 @@ public class Main {
 	private static final String home = "C:\\Fiction\\";
 	private static final Map<Long, Fandom> masterArchiveData = Collections.synchronizedMap(new TreeMap<Long, Fandom>());
 	private static long UUID = 0;
+	private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 	
 	/**
 	 * @param args
@@ -93,6 +96,8 @@ public class Main {
 				Fandom fandom = (Fandom) ois.readObject();
 				fandom.setUUID(getNextUUID());
 				System.out.println("New fandom read from disk: \n" + fandom);
+				if(fandom.getFictions()==null)
+					fandom.setFictions(new ArrayList<>());
 				masterArchiveData.put(fandom.getUUID(), fandom);
 				ois.close();
 				file.delete();
@@ -124,6 +129,8 @@ public class Main {
 	}
 	
 //non-private accessors / mutators	
+	public static ExecutorService getThreadPool(){ return threadPool; }
+	
 	public static Map<Long, Fandom> getMasterArchiveDataMap(){
 		return masterArchiveData;
 	}
@@ -147,5 +154,4 @@ public class Main {
 	public static String getHomeDir(){
 		return home;
 	}
-
 }
