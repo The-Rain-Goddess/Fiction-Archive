@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.rain.fiction_archive.Main;
@@ -18,6 +19,7 @@ public class Fandom implements Serializable{
 	private long UUID;
 
 	public Fandom(FandomAttributes fa, long UUID) {
+		this.fictions = new ArrayList<Fiction>();
 		this.name = fa.getName();
 		this.path = fa.getPath();
 		this.UUID = UUID;
