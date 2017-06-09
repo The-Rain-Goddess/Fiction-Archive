@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.rain.fiction_archive.files.Fandom;
+import com.rain.fiction_archive.files.FandomAttributes;
 import com.rain.fiction_archive.gui.MainWindow;
 
 /**
@@ -36,6 +37,7 @@ public class Main {
 	public static void main(String[] args) {
 		try{
 			createHomeDirectory();
+			createAllFandom();
 			readFromDisk();
 			
 			/*
@@ -75,6 +77,18 @@ public class Main {
 		File homeDir = new File(home + "Fandom\\");
 		if (!homeDir.exists())
 			homeDir.mkdirs();
+	}
+	
+	private static void createAllFandom(){
+		File all = new File(home + "Fandom\\All.data");
+		if(!all.exists()){
+			Fandom allFandom = new Fandom( new FandomAttributes()
+												.setName("All")
+													.setPath(all.toString()),
+														getNextUUID()
+															);
+			masterArchiveData.put(allFandom.getUUID(), allFandom);
+		}
 	}
 	
 	private static void writeToDisk() throws IOException{
