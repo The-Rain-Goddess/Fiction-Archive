@@ -2,7 +2,10 @@ package com.rain.fiction_archive.files;
 
 public class FictionAttributes {
 	private String name, author, path, url;
-	private int bookmarkChapter, wordCount;
+	private String publishDate, updateDate;
+	private int bookmarkChapter, wordCount, chapterCount, favoriteCount,
+				followCount, reviewCount;
+	
 	
 	/**
 	 * @return the name
@@ -33,6 +36,84 @@ public class FictionAttributes {
 	 */
 	public int getBookmarkChapter() {
 		return bookmarkChapter;
+	}
+	/**
+	 * @return the publishDate
+	 */
+	public String getPublishDate() {
+		return publishDate;
+	}
+	/**
+	 * @return the updateDate
+	 */
+	public String getUpdateDate() {
+		return updateDate;
+	}
+	/**
+	 * @return the chapterCount
+	 */
+	public int getChapterCount() {
+		return chapterCount;
+	}
+	/**
+	 * @return the favoriteCount
+	 */
+	public int getFavoriteCount() {
+		return favoriteCount;
+	}
+	/**
+	 * @return the followCount
+	 */
+	public int getFollowCount() {
+		return followCount;
+	}
+	/**
+	 * @return the reviewCount
+	 */
+	public int getReviewCount() {
+		return reviewCount;
+	}
+	/**
+	 * @param publishDate the publishDate to set
+	 */
+	public FictionAttributes setPublishDate(String publishDate) {
+		this.publishDate = publishDate;
+		return this;
+	}
+	/**
+	 * @param updateDate the updateDate to set
+	 */
+	public FictionAttributes setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+		return this;
+	}
+	/**
+	 * @param chapterCount the chapterCount to set
+	 */
+	public FictionAttributes setChapterCount(int chapterCount) {
+		this.chapterCount = chapterCount;
+		return this;
+	}
+	/**
+	 * @param favoriteCount the favoriteCount to set
+	 */
+	public FictionAttributes setFavoriteCount(int favoriteCount) {
+		this.favoriteCount = favoriteCount;
+		return this;
+	}
+	/**
+	 * @param followCount the followCount to set
+	 */
+	public FictionAttributes setFollowCount(int followCount) {
+		this.followCount = followCount;
+		return this;
+	}
+	/**
+	 * @param reviewCount the reviewCount to set
+	 */
+	public FictionAttributes setReviewCount(int reviewCount) {
+		this.reviewCount = reviewCount;
+		return this;
 	}
 	/**
 	 * @param name the name to set

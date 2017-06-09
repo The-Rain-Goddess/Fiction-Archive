@@ -14,7 +14,10 @@ public class Fiction implements Serializable{
 	 */
 	private static final long serialVersionUID = 5185781113396566196L;
 	private String name, author, path, url;
+	private String publishDate, updateDate;
 	private int bookmarkChapter, wordCount, chapterCount, rating;
+	private int favoriteCount, followCount, reviewCount;
+	
 
 	public Fiction(FictionAttributes fa) {
 		this.name = fa.getName();
@@ -23,6 +26,12 @@ public class Fiction implements Serializable{
 		this.url = fa.getUrl();
 		this.bookmarkChapter = fa.getBookmarkChapter();
 		this.wordCount = fa.getWordCount();
+		this.chapterCount = fa.getChapterCount();
+		this.favoriteCount = fa.getFavoriteCount();
+		this.followCount = fa.getFollowCount();
+		this.reviewCount = fa.getReviewCount();
+		this.publishDate = fa.getPublishDate();
+		this.updateDate = fa.getUpdateDate();
 	}
 
 	/**
@@ -145,6 +154,97 @@ public class Fiction implements Serializable{
 	}
 
 	/**
+	 * @return the publishDate
+	 */
+	public String getPublishDate() {
+		return publishDate;
+	}
+
+	/**
+	 * @return the updateDate
+	 */
+	public String getUpdateDate() {
+		return updateDate;
+	}
+
+	/**
+	 * @return the favoriteCount
+	 */
+	public int getFavoriteCount() {
+		return favoriteCount;
+	}
+	
+	/**
+	 * @return the favoriteCount
+	 */
+	public IntegerProperty getFavoriteCountProperty() {
+		return new SimpleIntegerProperty(favoriteCount);
+	}
+
+	/**
+	 * @return the followCount
+	 */
+	public int getFollowCount() {
+		return followCount;
+	}
+	
+	/**
+	 * @return the followCount
+	 */
+	public IntegerProperty getFollowCountProperty() {
+		return new SimpleIntegerProperty(followCount);
+	}
+	
+	/**
+	 * @return the reviewCount
+	 */
+	public int getReviewCount() {
+		return reviewCount;
+	}
+	
+	/**
+	 * @return the reviewCount
+	 */
+	public IntegerProperty getReviewCountProperty() {
+		return new SimpleIntegerProperty(reviewCount);
+	}
+
+	/**
+	 * @param publishDate the publishDate to set
+	 */
+	public void setPublishDate(String publishDate) {
+		this.publishDate = publishDate;
+	}
+
+	/**
+	 * @param updateDate the updateDate to set
+	 */
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	/**
+	 * @param favoriteCount the favoriteCount to set
+	 */
+	public void setFavoriteCount(int favoriteCount) {
+		this.favoriteCount = favoriteCount;
+	}
+
+	/**
+	 * @param followCount the followCount to set
+	 */
+	public void setFollowCount(int followCount) {
+		this.followCount = followCount;
+	}
+
+	/**
+	 * @param reviewCount the reviewCount to set
+	 */
+	public void setReviewCount(int reviewCount) {
+		this.reviewCount = reviewCount;
+	}
+
+	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
@@ -183,8 +283,16 @@ public class Fiction implements Serializable{
 	public String toString(){
 		return "Name: " + this.name
 				+ "\n Author: " + this.author
+				+ "\n Date Created: " + this.publishDate
+				+ "\n Date Updated: " + this.updateDate
 				+ "\n Word Count: " + this.wordCount
-				+ "\n Rating: " + this.rating;
+				+ "\n Chapter Count: " + this.chapterCount
+				+ "\n Bookmarked Chapter: " + this.bookmarkChapter
+				+ "\n Favorite Count: " + this.favoriteCount
+				+ "\n Follower Count: " + this.followCount
+				+ "\n Review Count: " + this.reviewCount
+				+ "\n Personal Rating: " + this.rating;
+				
 	}
 
 }
