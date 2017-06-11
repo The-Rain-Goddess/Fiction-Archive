@@ -205,11 +205,16 @@ public class MainWindow extends Application{
 	}
 	
 	private void updateAddFictionButton(Fandom fandom){
-		this.addFiction.setText("Add to " + fandom.getName());
-		addFiction.setGraphic(new ImageView(new Image("res/add.png")));
-		addFiction.setOnAction((ActionEvent e) -> {
-			showAddFictionWindow(fandom);
-		});
+		if(!fandom.getName().equals("All")){
+			this.addFiction.setVisible(true);
+			this.addFiction.setText("Add to " + fandom.getName());
+			addFiction.setGraphic(new ImageView(new Image("res/add.png")));
+			addFiction.setOnAction((ActionEvent e) -> {
+				showAddFictionWindow(fandom);
+			});
+		} else {
+			this.addFiction.setVisible(false);
+		}
 	}
 	
 	private void showAddFictionWindow(Fandom fandom){
@@ -254,6 +259,10 @@ public class MainWindow extends Application{
 		final ComboBox<Domain> domainBox = new ComboBox<>();
 		domainBox.getItems().addAll(Domain.values());
 		
+		//required
+		final Label required = new Label("* Required");
+		required.setFocusTraversable(false);
+		
 		//submit
 		Button submit = new Button("Submit");
 		submit.setOnAction((ActionEvent e) -> {
@@ -275,8 +284,10 @@ public class MainWindow extends Application{
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				if(fiction != null)
+				if(fiction != null){
 					fandom.getFictions().add(fiction);
+					Main.getMasterDataAsList().get(0).getFictions().add(fiction);
+				}
 				this.updateTabs(fandom);
 				root.close();
 			}
@@ -301,14 +312,15 @@ public class MainWindow extends Application{
 		GridPane.setConstraints(authorField, 1, 1);
 		
 		GridPane.setConstraints(domainLabel, 0, 2);
-		//GridPane.setConstraints(domainField, 1, 2);
 		GridPane.setConstraints(domainBox, 1, 2);
 		
+		GridPane.setConstraints(required, 0, 3);
+		
 		windowComponents.addAll(
-					Arrays.asList(titleLabel, titleField,
+					Arrays.asList(	titleLabel, titleField,
 									authorLabel, authorField,
 									domainLabel, domainBox, 
-									submit));
+									required, submit));
 		return windowComponents;
 	}
 	
@@ -444,7 +456,7 @@ public class MainWindow extends Application{
 		componentLayout.getChildren().addAll(getAddFandomWindowComponents(addWindowRootStage));
 		
 		//create Scene
-		Scene scene = new Scene(componentLayout,550,300);
+		Scene scene = new Scene(componentLayout,475,50);
 		
 		//set Screen to show Scene
 		addWindowRootStage.setScene(scene);
@@ -485,8 +497,8 @@ public class MainWindow extends Application{
 				onSubmit(
 							new FandomAttributes()
 								.setName(nameField.getText())
-								.setPath(Main.getHomeDir() + nameField.getText())
-									);
+									.setPath(Main.getHomeDir() + nameField.getText())
+										);
 				root.close();
 			}
 		});
