@@ -6,6 +6,6 @@
 			<accessrule kind="accessible" pattern="javafx/**"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry kind="lib" path="Q:/Workspace/Fiction-Archive/Fiction Archive/bin/jsoup-1.10.1.jar"/>
+	<classpathentry kind="lib" path="Q:/Workspace/Fiction-Archive/Fiction Archive/src/jsoup-1.10.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
