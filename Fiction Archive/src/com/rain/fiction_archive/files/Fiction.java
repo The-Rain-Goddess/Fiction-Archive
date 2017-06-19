@@ -281,7 +281,7 @@ public class Fiction implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "Name: " + this.name
+		return "\nName: " + this.name
 				+ "\n Author: " + this.author
 				+ "\n Date Created: " + this.publishDate
 				+ "\n Date Updated: " + this.updateDate

@@ -236,7 +236,7 @@ public class MainWindow extends Application{
 		addFictionWindowRootStage.show();
 	}
 	
-	private List<Control> getAddFictionWindowComponents(Stage root, Fandom fandom){
+	private List<Control> getAddFictionWindowComponents(Stage root, final Fandom fandom){
 		List<Control> windowComponents = new ArrayList<>();
 		
 		//Name
@@ -264,12 +264,13 @@ public class MainWindow extends Application{
 		required.setFocusTraversable(false);
 		
 		//submit
-		Button submit = new Button("Submit");
+		Button submit = new Button("Lookup");
 		submit.setOnAction((ActionEvent e) -> {
-			if(!titleField.textProperty().getValue().equals("")
+			if(	   !titleField.textProperty().getValue().equals("")
 				&& !authorField.textProperty().get().equals("")
 				&& domainBox.getValue() != null){
 				System.out.println("All conditions met");
+				root.close();
 				Future<Fiction> future = Main.getThreadPool()
 													.submit(
 														new FictionSearch(
@@ -281,15 +282,21 @@ public class MainWindow extends Application{
 				try {
 					fiction = future.get();
 					System.out.println(fiction);
-				} catch (Exception e1) {
-					e1.printStackTrace();
+				} catch (Exception x) {
+					x.printStackTrace();
+					String message = "Unable to find " 
+									+ titleField.textProperty().get() 
+									+ " by " 
+									+ authorField.textProperty().get();
+					System.out.println(message);
+					displayErrorMessage(message);
 				}
 				if(fiction != null){
+					System.out.println("Adding fiction: " + fiction + "\n to Fandom " + fandom.getName() + "\n");
 					fandom.getFictions().add(fiction);
 					Main.getMasterDataAsList().get(0).getFictions().add(fiction);
 				}
 				this.updateTabs(fandom);
-				root.close();
 			}
 		});
 		
@@ -322,6 +329,17 @@ public class MainWindow extends Application{
 									domainLabel, domainBox, 
 									required, submit));
 		return windowComponents;
+	}
+	
+	private void displayErrorMessage(String message){
+		Stage errorWindow = new Stage();
+		VBox componentLayout = new VBox();
+		Label errorLabel = new Label(message);
+		VBox.setMargin(errorLabel, new Insets(10,10,10,10));
+		componentLayout.getChildren().addAll(errorLabel);
+		Scene scene = new Scene(componentLayout);
+		errorWindow.setScene(scene);
+		errorWindow.show();
 	}
 	
 	private Tab getFandomTab(Fandom f){

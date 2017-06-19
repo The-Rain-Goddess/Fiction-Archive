@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.rain.fiction_archive.files.Domain;
 import com.rain.fiction_archive.files.Fiction;
 import com.rain.fiction_archive.files.FictionAttributes;
 import com.rain.fiction_archive.files.FictionIdentificationAttributes;
@@ -32,9 +33,17 @@ public class FictionSearch implements Callable<Fiction> {
 	}
 	
 	private String getSearchURL(){
-		return fiction.getDomain().getSearchURL() 
-						+ fiction.getTitle().replaceAll(" ", "+") + "+" 
-						+ fiction.getAuthor().replaceAll(" ", "+");
+		if(fiction.getDomain()==Domain.AO3)
+			return fiction.getDomain().getSearchURL() 
+							+ fiction.getTitle().replaceAll(" ", "+").replaceAll(":", "")
+							+ "+"
+							+ fiction.getAuthor().replaceAll(" ", "+");
+		else if(fiction.getDomain()==Domain.FFNet){
+			String[] searchURL = fiction.getDomain().getSearchURL().split("SEARCHTERM");
+			return searchURL[0] + fiction.getTitle().replaceAll(" ", "+") + searchURL[1];
+		} else {
+			return null;
+		}
 	}
 	
 	private String getDomainURL(){
@@ -42,17 +51,24 @@ public class FictionSearch implements Callable<Fiction> {
 	}
 	
 	@Override
-	public Fiction call() throws Exception {
-		return new Fiction( 
-					getFictionAttributes()
-						.setName(fiction.getTitle())
-							.setAuthor(fiction.getAuthor())		
-								);
+	public String toString(){
+		return "Trying to retrieve: " + fiction;
 	}
 	
+	@Override
+	public Fiction call() throws Exception {
+		return new Fiction( 
+							getFictionAttributes()
+								.setName( this.fiction.getTitle() )
+									.setAuthor( this.fiction.getAuthor() )		
+										);
+	}
+	
+//method chain that grabs the fiction's stats	
 	private FictionAttributes getFictionAttributes() throws IOException{
 		int wordCount = 0, chapterCount = 0, follows = 0, favorites = 0, reviews = 0;
 		String publishDate = "", updateDate = "";
+		
 		for(Element e : getStatsElementsList()){
 			if(e.attr("class").contains("published"))
 				publishDate = e.text();
@@ -82,16 +98,19 @@ public class FictionSearch implements Callable<Fiction> {
 	private List<Element> getStatsElementsList() throws IOException{
 		List<Element> stats = new ArrayList<>();
 		for(Element e : getStatsSearch()){
-			if(e.attr("class").equals("stats")){
-				stats.addAll(e.select("dd"));
+			if(e.attr("class").contains(fiction.getDomain().getHTMLFilter().getStatSearch())){
+				if(fiction.getDomain()== Domain.AO3)
+					stats.addAll(e.select(fiction.getDomain().getHTMLFilter().getStatSearchFilter()));
+				else
+					stats.add(e);
 			}
-		} stats.remove(0);
+		} if(fiction.getDomain() == Domain.AO3)
+			stats.remove(0); //removes an extraneous result
 		return stats;
 	}
 	
 	private Elements getStatsSearch() throws IOException{
-		
-		return getFictionHTMLPage().select("dd");
+		return getFictionHTMLPage().select(fiction.getDomain().getHTMLFilter().getStatFilter()); 
 	}
 	
 	private Document getFictionHTMLPage() throws IOException{
@@ -101,19 +120,15 @@ public class FictionSearch implements Callable<Fiction> {
 	private Element getFilteredLinks() throws IOException{
 		List<Element> filteredLinks = new ArrayList<>();
 		for(Element e : getSearchLinks()){
-			if(e.attr("href").contains("/works/") && !e.attr("href").contains("/search"))
+			if(e.attr("href").contains(fiction.getDomain().getHTMLFilter().getLinkFilter()) 
+				&& !e.attr("href").contains("/search"))
 				filteredLinks.add(e);
-		} return filteredLinks.get(0);
+		} 
+		System.out.println("Filtered " + filteredLinks);
+		return filteredLinks.get(0);
 	}
 	
 	private Elements getSearchLinks() throws IOException{
 		return Jsoup.connect(getSearchURL()).get().select("a[href]");
 	}
-
-	
-	@Override
-	public String toString(){
-		return "Trying to retrieve: " + fiction;
-	}
-
 }
